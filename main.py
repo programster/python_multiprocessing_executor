@@ -9,6 +9,11 @@ import multiprocessing
 import sys
 import subprocess
 
+# This MUST be defined before the pool is created. refer to: 
+# http://stackoverflow.com/questions/2782961/yet-another-confusion-with-multiprocessing-error-module-object-has-no-attribu
+def process_line(line_command):
+    subprocess.check_call(line_command, shell=True)
+    
 num_cpu = multiprocessing.cpu_count()
 job_pool = multiprocessing.Pool(num_cpu)
 
@@ -16,9 +21,5 @@ job_pool = multiprocessing.Pool(num_cpu)
 cmds_fp = sys.argv[1]
 lines = [line.strip() for line in open(cmds_fp, 'r')]
 
-def process_line(line_command):
-    subprocess.check_call(line_command, shell=True)
-
 job_pool.map(process_line, lines)
-
 
